@@ -470,4 +470,5 @@
     <string name="unexpected_error">Unexpected error</string>
     <string name="unexpected_error_desc">You can copy the details below and include them in a bug report.</string>
     <string name="directly_apply_template">Directly apply template</string>
+    <string name="register_app_permission_error">Permission denied by system. HID mode will not work!</string>
 </resources>

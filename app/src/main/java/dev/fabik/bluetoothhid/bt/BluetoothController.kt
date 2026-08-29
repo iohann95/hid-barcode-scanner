@@ -145,20 +145,30 @@ class BluetoothController(var context: Context) {
             // Toggling Bluetooth (which clears the stack) was the only workaround before this fix.
             hidDevice?.unregisterApp()
 
-            hidDevice?.registerApp(
-                Descriptor.SDP_RECORD,
-                null,
-                qos,
-                Executors.newCachedThreadPool(),
-                hidDeviceCallback
-            )
-
-            MainScope().launch {
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.bt_service_connected),
-                    Toast.LENGTH_SHORT
-                ).show()
+            try {
+                hidDevice?.registerApp(
+                    Descriptor.SDP_RECORD,
+                    null,
+                    qos,
+                    Executors.newCachedThreadPool(),
+                    hidDeviceCallback
+                )
+                MainScope().launch {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.bt_service_connected),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Throwable) {
+                Log.e(TAG, "Failed to register app", e)
+                MainScope().launch {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.register_app_permission_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
 
             latch.countDown()
