@@ -11,6 +11,8 @@ import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldBuffer
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenuItem
@@ -20,8 +22,10 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -37,6 +41,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -100,6 +106,33 @@ private object JsInputTransformation : InputTransformation {
             }
         }
     }
+}
+
+@Composable
+fun JavaScriptOption() {
+    val jsDialog = rememberDialogState()
+    var jsEnabled by rememberPreference(PreferenceStore.ENABLE_JS)
+    ButtonPreference(
+        title = stringResource(R.string.custom_javascript),
+        desc = stringResource(R.string.custom_js_desc),
+        icon = Icons.Default.Code,
+        extra = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                VerticalDivider(
+                    Modifier
+                        .height(32.dp)
+                        .padding(horizontal = 24.dp)
+                )
+                Switch(jsEnabled, onCheckedChange = {
+                    jsEnabled = it
+                }, modifier = Modifier.semantics(mergeDescendants = true) {
+                    stateDescription = "Custom JavaScript is ${if (jsEnabled) "On" else "Off"}"
+                })
+            }
+        },
+        onClick = jsDialog::open
+    )
+    JavaScriptEditorDialog(jsDialog)
 }
 
 @Composable

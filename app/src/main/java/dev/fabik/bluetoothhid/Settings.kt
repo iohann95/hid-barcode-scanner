@@ -10,7 +10,6 @@ import androidx.annotation.ArrayRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -60,16 +59,12 @@ import androidx.compose.material.icons.filled.Vibration
 import androidx.compose.material.icons.filled.VideoStable
 import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalClipboard
@@ -78,8 +73,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.platform.toClipEntry
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -89,7 +82,7 @@ import dev.fabik.bluetoothhid.ui.CheckBoxPreference
 import dev.fabik.bluetoothhid.ui.ComboBoxEnumPreference
 import dev.fabik.bluetoothhid.ui.CustomKeysDialog
 import dev.fabik.bluetoothhid.ui.ExternalPluginsModal
-import dev.fabik.bluetoothhid.ui.JavaScriptEditorDialog
+import dev.fabik.bluetoothhid.ui.JavaScriptOption
 import dev.fabik.bluetoothhid.ui.ProfileManageDialog
 import dev.fabik.bluetoothhid.ui.SaveScanImageOptionsModal
 import dev.fabik.bluetoothhid.ui.SliderPreference
@@ -103,7 +96,6 @@ import dev.fabik.bluetoothhid.utils.LocalDataStore
 import dev.fabik.bluetoothhid.utils.PreferenceStore
 import dev.fabik.bluetoothhid.utils.ProfileManager
 import dev.fabik.bluetoothhid.utils.rememberEnumPreference
-import dev.fabik.bluetoothhid.utils.rememberPreferenceNull
 import dev.fabik.bluetoothhid.utils.setPreference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -331,31 +323,7 @@ internal fun buildConnectionSettings(
     }
 
     add {
-        val jsDialog = rememberDialogState()
-        var jsEnabled by rememberPreferenceNull(PreferenceStore.ENABLE_JS)
-        ButtonPreference(
-            title = strings[R.string.custom_javascript],
-            desc = strings[R.string.custom_js_desc],
-            icon = Icons.Default.Code,
-            extra = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    VerticalDivider(
-                        Modifier
-                            .height(32.dp)
-                            .padding(horizontal = 24.dp)
-                    )
-                    jsEnabled?.let { c ->
-                        Switch(c, onCheckedChange = {
-                            jsEnabled = it
-                        }, modifier = Modifier.semantics(mergeDescendants = true) {
-                            stateDescription = "Custom JavaScript is ${if (c) "On" else "Off"}"
-                        })
-                    }
-                }
-            },
-            onClick = jsDialog::open
-        )
-        JavaScriptEditorDialog(jsDialog)
+        JavaScriptOption()
     }
 
     add {

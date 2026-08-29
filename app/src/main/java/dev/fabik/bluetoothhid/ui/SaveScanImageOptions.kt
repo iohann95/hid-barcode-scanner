@@ -52,14 +52,13 @@ import dev.fabik.bluetoothhid.R
 import dev.fabik.bluetoothhid.utils.PreferenceStore
 import dev.fabik.bluetoothhid.utils.getPreferenceState
 import dev.fabik.bluetoothhid.utils.rememberPreference
-import dev.fabik.bluetoothhid.utils.rememberPreferenceNull
 import dev.fabik.bluetoothhid.utils.setPreference
 import kotlinx.coroutines.runBlocking
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SaveScanImageOptionsModal() {
-    var saveScanEnabled by rememberPreferenceNull(PreferenceStore.SAVE_SCAN)
+    var saveScanEnabled by rememberPreference(PreferenceStore.SAVE_SCAN)
 
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSheet by rememberSaveable { mutableStateOf(false) }
@@ -76,13 +75,11 @@ fun SaveScanImageOptionsModal() {
                         .height(32.dp)
                         .padding(horizontal = 24.dp)
                 )
-                saveScanEnabled?.let { c ->
-                    Switch(c, onCheckedChange = {
-                        saveScanEnabled = it
-                    }, modifier = Modifier.semantics(mergeDescendants = true) {
-                        stateDescription = "Save scan image is ${if (c) "On" else "Off"}"
-                    })
-                }
+                Switch(saveScanEnabled, onCheckedChange = {
+                    saveScanEnabled = it
+                }, modifier = Modifier.semantics(mergeDescendants = true) {
+                    stateDescription = "Save scan image is ${if (saveScanEnabled) "On" else "Off"}"
+                })
             }
         }
     )

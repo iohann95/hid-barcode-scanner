@@ -37,12 +37,11 @@ import androidx.compose.ui.unit.dp
 import dev.fabik.bluetoothhid.R
 import dev.fabik.bluetoothhid.utils.PreferenceStore
 import dev.fabik.bluetoothhid.utils.rememberPreference
-import dev.fabik.bluetoothhid.utils.rememberPreferenceNull
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VolumeKeyOptionsModal() {
-    var useVolumeKeys by rememberPreferenceNull(PreferenceStore.SEND_WITH_VOLUME)
+    var useVolumeKeys by rememberPreference(PreferenceStore.SEND_WITH_VOLUME)
 
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSheet by rememberSaveable { mutableStateOf(false) }
@@ -59,13 +58,11 @@ fun VolumeKeyOptionsModal() {
                         .height(32.dp)
                         .padding(horizontal = 24.dp)
                 )
-                useVolumeKeys?.let { c ->
-                    Switch(c, onCheckedChange = {
-                        useVolumeKeys = it
-                    }, modifier = Modifier.semantics(mergeDescendants = true) {
-                        stateDescription = "Use volume keys is ${if (c) "On" else "Off"}"
-                    })
-                }
+                Switch(useVolumeKeys, onCheckedChange = {
+                    useVolumeKeys = it
+                }, modifier = Modifier.semantics(mergeDescendants = true) {
+                    stateDescription = "Use volume keys is ${if (useVolumeKeys) "On" else "Off"}"
+                })
             }
         }
     )

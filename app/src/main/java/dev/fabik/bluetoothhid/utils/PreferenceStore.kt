@@ -491,31 +491,6 @@ fun <T> rememberPreference(
 }
 
 @Composable
-fun <T> rememberPreferenceNull(
-    pref: PreferenceStore.Preference<T>,
-): MutableState<T?> {
-    val context = LocalContext.current
-    val dataStore = LocalDataStore.current
-    val scope = rememberCoroutineScope()
-    val state = context.getPreferenceState(pref)
-
-    return remember(pref.key, dataStore) {
-        object : MutableState<T?> {
-            override var value: T?
-                get() = state.value
-                set(value) {
-                    scope.launch {
-                        context.setPreference(pref, value!!)
-                    }
-                }
-
-            override fun component1(): T? = value
-            override fun component2(): (T?) -> Unit = { value = it }
-        }
-    }
-}
-
-@Composable
 fun <E : Enum<E>> rememberEnumPreference(
     pref: PreferenceStore.EnumPref<E>,
 ): MutableState<E> {

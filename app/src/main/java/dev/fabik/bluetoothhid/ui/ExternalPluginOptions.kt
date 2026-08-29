@@ -61,7 +61,6 @@ import dev.fabik.bluetoothhid.utils.ConnectionMode
 import dev.fabik.bluetoothhid.utils.PreferenceStore
 import dev.fabik.bluetoothhid.utils.getPreferenceState
 import dev.fabik.bluetoothhid.utils.rememberPreference
-import dev.fabik.bluetoothhid.utils.rememberPreferenceNull
 import kotlinx.coroutines.delay
 
 // How often to ping plugins for status while the picker sheet is open (snappy, but light).
@@ -78,7 +77,7 @@ fun ExternalPluginsModal() {
 
     val connectionMode by context.getPreferenceState(PreferenceStore.CONNECTION_MODE)
     val isExternalMode = connectionMode == ConnectionMode.EXTERNAL.ordinal
-    var externalOutputEnabled by rememberPreferenceNull(PreferenceStore.ENABLE_EXTERNAL_OUTPUT)
+    var externalOutputEnabled by rememberPreference(PreferenceStore.ENABLE_EXTERNAL_OUTPUT)
 
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showSheet by rememberSaveable { mutableStateOf(false) }
@@ -95,17 +94,15 @@ fun ExternalPluginsModal() {
                         .height(32.dp)
                         .padding(horizontal = 24.dp)
                 )
-                externalOutputEnabled?.let { c ->
-                    Switch(
-                        c || isExternalMode,
-                        enabled = !isExternalMode,
-                        onCheckedChange = {
-                            externalOutputEnabled = it
-                        }, modifier = Modifier.semantics(mergeDescendants = true) {
-                            stateDescription =
-                                "External output enabled is ${if (c) "On" else "Off"}"
-                        })
-                }
+                Switch(
+                    externalOutputEnabled || isExternalMode,
+                    enabled = !isExternalMode,
+                    onCheckedChange = {
+                        externalOutputEnabled = it
+                    }, modifier = Modifier.semantics(mergeDescendants = true) {
+                        stateDescription =
+                            "External output enabled is ${if (externalOutputEnabled) "On" else "Off"}"
+                    })
             }
         },
     )
