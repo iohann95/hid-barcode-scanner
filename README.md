@@ -199,14 +199,6 @@ output to external plugins.
 While HID mode works immediately by emulating a keyboard, RFCOMM mode requires additional setup and
 may need software on your PC to receive data.
 
-### When to use RFCOMM mode
-
-- **Non-intrusive operation:** RFCOMM sends data invisibly in the background without interfering with the user's current work, while HID mode simulates keyboard input that can disrupt typing or active applications
-- When you need raw text data instead of keyboard input simulation
-- For integration with custom applications that read from COM ports
-- When HID mode doesn't work due to compatibility issues
-- **Professional barcode scanner replacement:** Many commercial barcode scanners use COM port mode to avoid interrupting the user's workflow
-
 ### Setting up RFCOMM mode
 
 1. **Enable RFCOMM mode:**
@@ -240,11 +232,6 @@ may need software on your PC to receive data.
   3. Choose your phone from device list → Select "Barcode Scanner" service
   4. Click OK to create the COM port
 
-**Can't read data from COM port:**
-- Verify the correct COM port number in Device Manager
-- Check if another application is already using the port
-- For Bluetooth SPP, baud rate setting is usually ignored, but some software may require any value
-
 **Technical details:**
 - **Protocol:** Bluetooth SPP (Serial Port Profile)
 - **UUID:** `00001101-0000-1000-8000-00805F9B34FB`
@@ -276,8 +263,6 @@ while (true) {
 
 **Recommended for C# developers:** [InTheHand.Net.Bluetooth](https://github.com/inthehand/32feet) library provides better Bluetooth support that allows You more robust connection handling compared to System.IO.Ports.
 
-**Custom RFCOMM implementations:** If you need to adapt the RFCOMM data transmission to simulate specific physical COM scanner behavior (custom protocols, special formatting, etc.), we're open to implementing these features. Please open an issue describing your use case.
-
 ## External plugins
 
 The app also supports sending the scanned value directly to all installed and enabled plugins.
@@ -286,6 +271,7 @@ HTTP to a PC in the same network.
 
 ### List of known plugins
 
+- [Minimal example Plugin](https://github.com/Fabi019/bt-scanner-example-plugin) can be used as a starting point
 - [TCP Transport Plugin](https://github.com/WinLin97/hid-barcode-scanner-plugin-tcp) by WinLin97
 
 *If you want your plugin added to this list just let me know*
@@ -364,10 +350,8 @@ val intent = Intent("dev.fabik.bluetoothhid.plugin.action.STATUS").apply {
     putExtra("protocol_version", 1)
     putExtra("package", ctx.packageName)
     putExtra("running", true)
-    putExtra(
-        "state",
-        "IDLE"
-    )   // Supported states: IDLE, STARTING, CONNECTING, CONNECTED, LISTENING, ERROR, BLOCKED, NO_PERMISSION, UNKNOWN
+    // Supported states: IDLE, STARTING, CONNECTING, CONNECTED, LISTENING, ERROR, BLOCKED, NO_PERMISSION, UNKNOWN
+    putExtra("state", "IDLE")
     putExtra("status_detail", "Example plugin connected")
 }
 ctx.sendBroadcast(intent)
