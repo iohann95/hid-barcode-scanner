@@ -143,6 +143,14 @@ To reduce the chance of happening in the future: Increase the "Transmit delay" (
 Otherwise you could try to tweak the L2CAP QoS settings in the top right menu of the settings.
 Increasing the token rate/peak bandwith or decreasing the latency might help.
 
+### Error: JSEngine not initialized or unsupported
+
+The engine for running JavaScript is provided by the system WebView.
+Normally this should be pre-installed as "Android System WebView".
+In case this is missing, you will get the above error. You might be able
+to install an alternative WebView for example [cromite](https://github.com/uazo/cromite).
+Installation guide: https://github.com/bromite/bromite/wiki/Installing-SystemWebView
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
