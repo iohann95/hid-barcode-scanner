@@ -67,6 +67,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -372,17 +373,17 @@ internal fun buildAppearanceSettings(strings: SettingsStrings): List<@Composable
             )
         }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        add {
-            SwitchPreference(
-                title = strings[R.string.dynamic_theme],
-                desc = strings[R.string.dynamic_theme_desc],
-                icon = Icons.Default.AutoAwesome,
-                preference = PreferenceStore.DYNAMIC_THEME
-            )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            add {
+                SwitchPreference(
+                    title = strings[R.string.dynamic_theme],
+                    desc = strings[R.string.dynamic_theme_desc],
+                    icon = Icons.Default.AutoAwesome,
+                    preference = PreferenceStore.DYNAMIC_THEME
+                )
+            }
         }
     }
-}
 
 internal fun buildCameraSettings(strings: SettingsStrings): List<@Composable () -> Unit> =
     buildSettings {
@@ -464,13 +465,13 @@ internal fun buildCameraSettings(strings: SettingsStrings): List<@Composable () 
             )
         }
 
-    /*SwitchPreference(
-            title = strings[R.string.auto_zoom],
-            desc = strings[R.string.zooms_in_on_codes_to_far_away],
-            icon = Icons.Default.ZoomIn,
-            preference = PreferenceStore.AUTO_ZOOM
-    )*/
-}
+        /*SwitchPreference(
+                title = strings[R.string.auto_zoom],
+                desc = strings[R.string.zooms_in_on_codes_to_far_away],
+                icon = Icons.Default.ZoomIn,
+                preference = PreferenceStore.AUTO_ZOOM
+        )*/
+    }
 
 internal fun buildScannerSettings(
     strings: SettingsStrings,
@@ -695,10 +696,19 @@ internal fun buildAboutSettings(
     }
 
     add {
+        val clipboard = LocalClipboard.current
+
         ButtonPreference(
             title = strings[R.string.report_issue],
             desc = strings[R.string.report_issue_desc],
             icon = Icons.Default.BugReport,
+            onLongClick = {
+                scope.launch {
+                    clipboard.setClipEntry(
+                        ClipEntry(ClipData.newPlainText("Logs", getAppLogsAsString()))
+                    )
+                }
+            }
         ) {
             uriHandler.openUri("https://github.com/Fabi019/hid-barcode-scanner/issues/new")
         }
@@ -771,6 +781,20 @@ internal fun buildAboutSettings(
                 )
             )
         }
+    }
+}
+
+private fun getAppLogsAsString(): String {
+    return try {
+        val pid = android.os.Process.myPid()
+
+        Runtime.getRuntime()
+            .exec(arrayOf("logcat", "--pid=$pid", "-d"))
+            .inputStream
+            .bufferedReader()
+            .use { it.readText() }
+    } catch (e: Exception) {
+        e.stackTraceToString()
     }
 }
 
