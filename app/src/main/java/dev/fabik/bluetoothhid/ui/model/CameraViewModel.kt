@@ -133,7 +133,7 @@ class CameraViewModel : ViewModel() {
         Preview.Builder()
             .setResolutionSelector(
                 ResolutionSelector.Builder()
-                    .setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY)
+                    .setAspectRatioStrategy(AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY)
                     .build()
             )
             .build().apply {
